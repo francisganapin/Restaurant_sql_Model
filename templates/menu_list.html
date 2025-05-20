@@ -2,52 +2,191 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Product List</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Menu List - Rubia Restaurant System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    .product-card {
-      transition: transform 0.2s;
+    body {
+      background-color: #967259;
+      padding-top: 70px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    .product-card:hover {
-      transform: scale(1.03);
+    .navbar {
+      background-color: #198754;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
-    .product-img {
+    .navbar .nav-link,
+    .navbar .navbar-brand {
+      color: #fff !important;
+    }
+
+    .navbar .nav-link:hover {
+      color: #d4f4e0 !important;
+    }
+
+    .form-section {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      padding: 25px;
+      max-width: 950px;
+      margin: 0 auto 30px;
+    }
+
+    .search-button {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .search-button input,
+    .search-button select {
+      flex: 1 1 200px;
+    }
+
+    .product-image {
       height: 200px;
+      width: 100%;
       object-fit: cover;
+      border-top-left-radius: 0.5rem;
+      border-top-right-radius: 0.5rem;
+    }
+
+    .card.product-card {
+      transition: transform 0.2s ease-in-out;
+      border: none;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .card.product-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .pagination-links {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 30px;
+    }
+
+    .pagination-links a {
+      background-color: #009879;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .pagination-links a:hover {
+      background-color: #00755E;
+    }
+
+    h2.section-title {
+      font-weight: 700;
+      color: white;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .btn-primary {
+      background-color: #198754;
+      border-color: #198754;
+    }
+
+    .btn-primary:hover {
+      background-color: #145f43;
+      border-color: #145f43;
+    }
+
+    .btn {
+      font-weight: 500;
+      border-radius: 6px;
+    }
+
+    .card-body p {
+      margin-bottom: 6px;
+    }
+
+    .navbar-brand + .navbar-brand {
+      margin-left: 10px;
     }
   </style>
 </head>
+
 <body>
-  <div class="container py-5">
-    <h2 class="mb-4 text-center">Product List</h2>
-    <div class="row g-4">
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="#">Rubia Restaurant</a>
+    <a class="navbar-brand fw-bold" href="#">Welcome, {{ username }}!</a>
+    <a class="navbar-brand fw-bold" href="#">Role: {{ role }}</a>
 
- {% for item in menu_list %}
-      <!-- Product Item -->
-      <div class="col-md-4 col-sm-6">
-        <div class="card product-card shadow-sm">
-          <img src="{{ item.image_url }}" class="card-img-top product-img" alt="Product Image">
-          <div class="card-body">
-            <h5 class="card-title">{{item.name}}</h5>
-            <p class="card-text text-muted">{{item.description}}</p>
-            <p class="card-text fw-bold">₱{{ item.price }}</p>
-
-            <a href="#" class="btn btn-primary w-100">Edit</a>
-          </div>
-        </div>
-      </div>
- {% endfor %}
-
-
-
-      <!-- Add more product blocks as needed -->
-
+    <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon bg-light"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link active" href="#">Menu List</a></li>
+        <li class="nav-item"><a class="nav-link" href="/stock/list">Stock List</a></li>
+        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+      </ul>
     </div>
   </div>
+</nav>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<div class="container py-5">
+  <h2 class="section-title">Menu List</h2>
+
+  <form class="form-section" action="/menu/list" method="POST">
+    <div class="search-button">
+      <input type="text" class="form-control" name="query_name" placeholder="Search by name">
+      <select id="category" name="query_category" class="form-select">
+        <option value="">Select Category</option>
+        <option value="Dairy">Dairy</option>
+        <option value="Seafood">Seafood</option>
+        <option value="Spices">Spices</option>
+        <option value="Meat">Meat</option>
+      </select>
+      <button type="submit" class="btn btn-success">Search</button>
+    </div>
+  </form>
+
+  <div class="row g-4">
+    {% for item in menu_list %}
+    <div class="col-md-4 col-sm-6">
+      <div class="card product-card shadow-sm">
+        <img src="{{ url_for('static', filename=item.image_url) }}" class="product-image card-img-top" alt="{{ item.name }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ item.name }}</h5>
+          <p class="card-text text-muted">{{ item.description }}</p>
+          <p class="card-text fw-bold">Stock: {{ item.quantity }}</p>
+          <p class="card-text fw-bold">₱{{ item.price }}</p>
+          {% if role == 'admin' %}
+            <a href="#" class="btn btn-primary w-100 mb-2">Order</a>
+            <a href="#" class="btn btn-outline-danger w-100">Archive</a>
+          {% elif role == 'employee' %}
+            <a href="#" class="btn btn-primary w-100">Order</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="pagination-links">
+    {% if page > 1 %}
+      <a href="{{ url_for('menu_list', page=page-1) }}">← Previous</a>
+    {% endif %}
+    {% if page < total_pages %}
+      <a href="{{ url_for('menu_list', page=page+1) }}">Next →</a>
+    {% endif %}
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-v
