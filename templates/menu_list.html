@@ -146,10 +146,12 @@
       <input type="text" class="form-control" name="query_name" placeholder="Search by name">
       <select id="category" name="query_category" class="form-select">
         <option value="">Select Category</option>
-        <option value="Dairy">Dairy</option>
+        <option value="Pasta">Pasta</option>
         <option value="Seafood">Seafood</option>
-        <option value="Spices">Spices</option>
-        <option value="Meat">Meat</option>
+        <option value="Dessert">Dessert</option>
+        <option value="Salad">Salad</option>
+        <option value="Beverages">Beverages</option>
+        <option value="Main_Course">Main Course</option>
       </select>
       <button type="submit" class="btn btn-success">Search</button>
     </div>
@@ -162,7 +164,17 @@
         <img src="{{ url_for('static', filename=item.image_url) }}" class="product-image card-img-top" alt="{{ item.name }}">
         <div class="card-body">
           <h5 class="card-title">{{ item.name }}</h5>
+
+    
           <p class="card-text text-muted">{{ item.description }}</p>
+      
+
+          {% if item.category == 'Main_Course' %}
+            <p class="card-text text-muted">Main Course</p>
+          {% else %}
+            <p class="card-text text-muted">{{ item.category }}</p>
+          {% endif %}
+
           <p class="card-text fw-bold">Stock: {{ item.quantity }}</p>
           <p class="card-text fw-bold">₱{{ item.price }}</p>
           {% if role == 'admin' %}

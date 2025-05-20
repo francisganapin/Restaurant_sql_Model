@@ -34,11 +34,13 @@ class User(SQLModel,table=True):
 #-----------------------------------------------------------------------------------------------------------------------------------------#
 class CategoryMenuEnum(str,Enum):
 
-    Dairy = 'Dairy'
+    Main_Course = 'Main_Course'
     Seafood = 'Seafood'
-    Spices = 'Spices'
-    Meat = 'Meat'
+    Pasta = 'Pasta'
     Beverages = 'Beverages'
+    Salad   = 'Salad'
+    Pizza   = 'Pizza'
+    Dessert = 'Dessert'
     
     def __str__(self):
         return self.value
@@ -50,7 +52,7 @@ class Menu_List(SQLModel,table=True):
     quantity:       int                  = Field(nullable=False)                          #Visible    #Visible      #Hide
     price:          float                = Field(nullable=False,)                         #Visible    #Visible      #Visible
 
-    category:        CategoryMenuEnum         = Field()    
+    category:      CategoryMenuEnum      = Field()    
 
     name:           str                  = Field(nullable=False,max_length=56)            #Visible    #Visible      #Visible
     description:    str                  = Field(nullable=False,max_length=56)            #Visible    #Visible      #Visible
@@ -60,7 +62,7 @@ class Menu_List(SQLModel,table=True):
 
     orders:         list['Order_list']   = Relationship(back_populates='menu')           #Visible     #Visible      #Hide
 
-    is_archive:     bool                 = Field(default=False)                           #Visible     #Hide        #Hide
+    is_archive:     bool                 = Field(default=False)                          #Visible     #Hide        #Hide
    
 
 class Order_list(SQLModel,table=True):
@@ -100,23 +102,23 @@ class CategoryEnum(str,Enum):
 
 class Kitchen_Stock(SQLModel,table=True):
 
-    #Name           #Type                # field                                          #Admin      #Employee     #Viewer
-    id:             int                  = Field(default=None,primary_key=True)           #Visible    #Visible      #HIDE
-    quantity:       int                  = Field()                                        #Visible    #Visible      #Visible
-    price:          float                = Field()                                        #Visible    #Visible      #Visible
+    #Name           #Type                # field                                          #Admin      #Employee              #Viewer
+    id:             int                  = Field(default=None,primary_key=True)           #Visible    #Visible               #HIDE
+    quantity:       int                  = Field()                                        #Visible    #Visible               #Visible
+    price:          float                = Field()                                        #Visible    #Visible X-Update      #Visible
 
-    category:       CategoryEnum         = Field()                                        #Visible    #Visible      #Visible
+    category:       CategoryEnum         = Field()                                        #Visible    #Visible               #Visible
 
-    batch_code:     str                  = Field(nullable=False,max_length=6,unique=True) #Visible    #Visible      #HIDE
-    name:           str                  = Field(nullable=False, max_length=56)           #Visible    #Visible      #Visible
+    batch_code:     str                  = Field(nullable=False,max_length=6,unique=True) #Visible    #Visible               #HIDE
+    name:           str                  = Field(nullable=False, max_length=56)           #Visible    #Visible               #Visible
 
-    unit:           UnitEnum             = Field()                                        #Visible    #Visible      #Visible
+    unit:           UnitEnum             = Field()                                        #Visible    #Visible               #Visible
 
-    delivery_date:  datetime.date        = Field(default=date.today())                    #Visible    #Visible      #HIDE
-    spoilage_date:  datetime.date        = Field()                                        #Visible    #Visible      #HIDE
+    delivery_date:  datetime.date        = Field(default=date.today())                    #Visible    #Visible               #HIDE
+    spoilage_date:  datetime.date        = Field()                                        #Visible    #Visible               #HIDE
 
     # i add this so we could hide the item 
-    is_archive:     bool                 = Field(default=False)                           #Visible     #Hide        #Hide
+    is_archive:     bool                 = Field(default=False)                           #Visible     #Hide   X-Update      #Hide X-Update 
 
 
 
