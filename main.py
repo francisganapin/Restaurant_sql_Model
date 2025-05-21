@@ -1,30 +1,29 @@
+import os
+import webbrowser
+from datetime import date, datetime
+
 from flask import (
     Flask, render_template, request,
-    session as flask_session,  # <— rename this import
+    session as flask_session,
     redirect, url_for, flash
 )
+from flask_bcrypt import Bcrypt
 
 from sqlmodel import select, Session as DbaseSession
 
-from function.model import User, Kitchen_Stock, Menu_List,engine
+from function.model import User, Kitchen_Stock, Menu_List, Order_list,Income_table, engine
 
+from sqlalchemy.orm import selectinload
 
-from flask_bcrypt import Bcrypt
-
-import os
-
-from datetime import date,datetime
-
+from datetime import date
 
 today = date.today()
 
 app = Flask(__name__)
 
+app.secret_key = "sadwq‑dsdw1‑3212‑dsa"  
+
 bcrypt = Bcrypt(app)
-
-
-app.secret_key = "sadwq‑dsdw1‑3212‑dsa"
-
 
 
 
@@ -87,7 +86,7 @@ def menu_list():
     PER_PAGE = 6
 
     with DbaseSession(engine) as session:
-        stmt = select(Menu_List)
+        stmt = select(Menu_List).where(Menu_List.is_archive == False)
 
         
         if request.method == 'POST':
@@ -120,9 +119,139 @@ def menu_list():
         'page':page,
         'images_name': image_names,
         'total_pages': (total + PER_PAGE - 1) // PER_PAGE,
+        'today':today
     }
 
     return render_template('menu_list.html',**context)
+
+
+
+@app.route('/menu/list/archive/<int:id>',methods=['GET','POST'])
+def menu_list_archive(id):
+        # avoid who are not login user to update
+    if 'user_id' not in flask_session:
+        return redirect(url_for('login'))
+     #avoid to viewer to update this
+     
+    role = flask_session.get('role')
+    if role != 'admin':
+        flash('You cannot Edit this','error')
+        return redirect(url_for('menu_list'))
+    
+    with DbaseSession(engine) as session:
+        stmt = session.get(Menu_List, id)
+
+        if request.method == 'POST':
+            try:
+               value_archive =  request.form.get('value_archive')
+               item_name    =   request.form.get('item_name')
+               print(item_name)
+
+               stmt.is_archive = int(value_archive)
+               session.commit()
+
+               flash(f'Item  {item_name} was archive  successfully', 'success')
+            except Exception as e:
+                session.rollback()
+                flash('Item archive error.', 'error')
+
+    return redirect(url_for('menu_list'))
+
+
+@app.route("/menu/list/update/<int:id>",methods=['GET','POST'])
+def menu_list_update(id):
+
+    message = ''
+
+    # avoid who are not login user to update
+    if 'user_id' not in flask_session:
+        return redirect(url_for('login'))
+
+    #avoid to viewer to update this
+    role = flask_session.get('role')
+    if role not in ['admin', 'employee']:
+        flash('You cannot Edit this','error')
+        return redirect(url_for('menu_list'))
+    
+    with DbaseSession(engine) as session:
+        stmt = session.get(Menu_List, id)
+
+        if request.method == 'POST':
+            try:
+                item_name =  request.form.get('item_name')
+                price = request.form.get('item_price')
+                quantity = request.form.get('item_quantity')
+                print(quantity)
+
+                stmt.price = float(price)
+                stmt.quantity = int(quantity)
+                
+                session.commit()
+                flash(f'Item {item_name} was updated successfully', 'success')
+            except Exception as e:
+                session.rollback()
+                flash('Item updated error.', 'error')
+
+    return redirect(url_for('menu_list'))
+
+
+@app.route("/menu/list/order/<int:id>",methods=['GET','POST'])
+def menu_list_order(id):
+
+  
+
+
+    # avoid who are not login user to update
+    if 'user_id' not in flask_session:
+        return redirect(url_for('login'))
+
+    #avoid to viewer to update this
+    role = flask_session.get('role')
+    if role not in ['admin', 'employee']:
+        flash('You cannot Edit this','error')
+        return redirect(url_for('menu_list'))
+    
+    with DbaseSession(engine) as session:
+        stmt = session.get(Menu_List, id)
+
+
+        if request.method == 'POST':
+            try:
+                item_name =  request.form.get('item_name')
+                quantity = int(request.form.get('item_quantity'))
+                item_price = float(request.form.get('item_price'))
+                table = request.form.get('table_entry')
+                print(table)
+                print(quantity)
+
+
+                stmt.quantity = stmt.quantity - quantity
+                total_price = item_price * quantity
+                # Save order
+
+                #today = date.today()
+                #order_date = today.strftime('%Y-%m-%d')  
+
+                stmt2 = Order_list(
+                                   menu_id      =id, 
+                                   quantity     =quantity,
+                                   total        = total_price,
+                                   table        = table
+                                   #order_date = order_date
+                                   )
+                
+             
+               
+                session.add(stmt2)
+                session.commit()
+                
+                
+                flash(f'Item {item_name} was Order successfully', 'success')
+            except Exception as e:
+                session.rollback()
+                flash(f'Item updated error.{today}', 'error')
+
+    return redirect(url_for('menu_list'))
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
@@ -305,5 +434,75 @@ def stock_list_insert():
     return redirect(url_for('stock_list'))
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+@app.route("/order/list",methods=['GET','POST'])
+def order_list():
+
+    if 'user_id' not in flask_session:
+        return redirect(url_for('login'))
+    
+    #get session user
+    username = flask_session.get('username')
+    role =   flask_session.get('role')
+
+    with DbaseSession(engine) as session:
+        stmt = select(Order_list).options(selectinload(Order_list.menu))
+        orders = session.exec(stmt).all()
+
+        print(orders)
+        count  = len(set(order.table for order in orders)) # we use this to count only range
+        count_new = count + 1
+        print(count)
+
+    context = {
+        'username': username,
+        'role': role,
+        'order_list':orders,
+        'count':count_new #we use this range print on order
+        
+    }
+
+    return render_template('order_list.html',**context)
+
+
+
+@app.route('/order/list/payment', methods=['GET','POST'])
+def order_list_payment():
+
+    # avoid who are not login user to update
+    if 'user_id' not in flask_session:
+        return redirect(url_for('login'))
+     #avoid to viewer to update this
+     
+    role = flask_session.get('role')
+    if role != 'admin':
+        flash('You cannot Edit this','error')
+        return redirect(url_for('stock_list'))
+    
+
+    
+    if request.method == 'POST':
+        item_name           =   request.form.get('item_name')
+ 
+
+        try:
+            new_item = Income_table(
+                   
+                    )
+             
+
+            with DbaseSession(engine) as session:
+                session.add(new_item)
+                session.commit()
+
+                flash(f'Item  {item_name} was added successfully', 'success')
+
+        except Exception as e:
+
+                flash(f'Item {item_name} was Insert error.', 'error')
+
+    return redirect(url_for('stock_list'))
+
 if __name__ == '__main__':
+    webbrowser.open('http://127.0.0.1:5000/login')
     app.run(debug=True)

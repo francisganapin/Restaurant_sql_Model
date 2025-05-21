@@ -130,13 +130,26 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link active" href="#">Menu List</a></li>
+        <li class="nav-item"><a class="nav-link active" href="#">Order List</a></li>
         <li class="nav-item"><a class="nav-link" href="/stock/list">Stock List</a></li>
         <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
       </ul>
     </div>
   </div>
 </nav>
+
+<div class="center-error">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% for category, msg in messages %}
+    <div class="flash {{ category }}">
+      <p style="font-size:50px;">
+          {{ msg }}
+      </p>
+  </div>
+  {% endfor %}
+  {% endwith %}
+</div>
+
 
 <div class="container py-5">
   <h2 class="section-title">Menu List</h2>
@@ -178,14 +191,180 @@
           <p class="card-text fw-bold">Stock: {{ item.quantity }}</p>
           <p class="card-text fw-bold">₱{{ item.price }}</p>
           {% if role == 'admin' %}
-            <a href="#" class="btn btn-primary w-100 mb-2">Order</a>
-            <a href="#" class="btn btn-outline-danger w-100">Archive</a>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#EditModalUpdate{{ item.id }}">Edit</button>
+
+<!---- out of stock logic for button -->
+            {% if item.quantity != 0 %}
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#EditModalOrder{{ item.id }}">Place Order</button>
+            {% else %}
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal">Out of Stock</button>
+            {% endif %}
+
+<!---- out of stock logic for button -->
+
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#EditModalArchive{{ item.id }}">Archive</button>
           {% elif role == 'employee' %}
-            <a href="#" class="btn btn-primary w-100">Order</a>
+
+<!---- out of stock logic for button -->
+            {% if item.quantity != 0 %}
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#EditModalOrder{{ item.id }}">Place Order</button>
+            {% else %}
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal">Out of Stock</button>
+            {% endif %}
+
+<!---- out of stock logic for button -->
+
           {% endif %}
         </div>
       </div>
     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-------------Order---------------->
+
+    <div class="modal fade" id="EditModalOrder{{ item.id }}" tabindex="-1" aria-labelledby="EditModalLabel{{ item.id }}" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg rounded-3">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="EditModalLabel"></h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-4">
+
+            <form action="/menu/list/order/{{ item.id }}" method="POST" enctype="multipart/form-data">
+              <div class="mb-3">
+                <label for="titleInput" class="form-label">Name</label>
+                <input type="text" name="item_name" class="form-control" id="item_name" value="{{ item.name }}" readonly>
+              </div>
+
+              <div class="mb-3">
+                <label for="referenceInput" class="form-label">Price</label>
+                <input type="number" name="item_price" class="form-control" id="item_quantity" value="{{item.price}}" readonly>
+              </div>
+              <div class="mb-3">
+                <label for="referenceInput" class="form-label">Quantity</label>
+                <input type="number" name="item_quantity" class="form-control" id="item_quantity" max="{{ item.quantity }}" min='1'>
+              </div>
+
+              <div class="mb-3">
+                <label for="referenceInput" class="form-label">Table</label>
+
+                <select id="table_entry" name="table_entry" class="form-select">
+                  <option value="table1">Table 1</option>
+                  <option value="table2">Table 2</option>
+                  <option value="table3">Table 3</option>
+                  <option value="table4">Table 4</option>
+                  <option value="table5">Table 5</option>
+             
+                </select>
+
+              </div>
+             
+
+              <div class="d-grid">
+                <button type="submit" class="btn btn-success">Place Order</button>
+              </div>
+            </form>
+            
+          </div>
+          <div class="modal-footer justify-content-between">
+            <small class="text-muted">Please make sure all fields are correct before submitting.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+
+<!-------------Order---------------->
+
+<!-------------Update---------------->
+
+
+    <div class="modal fade" id="EditModalUpdate{{ item.id }}" tabindex="-1" aria-labelledby="EditModalLabel{{ item.id }}" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg rounded-3">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="EditModalLabel">Code:{{ item.batch_code }}</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-4">
+
+            <form action="/menu/list/update/{{ item.id }}" method="POST" enctype="multipart/form-data">
+              <div class="mb-3">
+                <label for="titleInput" class="form-label">Name</label>
+                <input type="text" name="item_name" class="form-control" id="item_name" value="{{ item.name }}" readonly>
+              </div>
+
+              <!--- limit the use  to edit if they are employee or viewer -->
+              {% if role == 'admin' %}
+              <div class="mb-3">
+                <label for="descriptionInput" class="form-label">Price</label>
+                <input type="number" name="item_price" class="form-control" id="item_price" value="{{ item.price }}" step="0.01">
+              </div>
+              {% endif %}
+
+              <div class="mb-3">
+                <label for="referenceInput" class="form-label">Quantity</label>
+                <input type="number" name="item_quantity" class="form-control" id="item_quantity" value="{{ item.quantity }}">
+              </div>
+              <div class="d-grid">
+                <button type="submit" class="btn btn-success">Update Item</button>
+              </div>
+            </form>
+            
+          </div>
+          <div class="modal-footer justify-content-between">
+            <small class="text-muted">Please make sure all fields are correct before submitting.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+<!-------------Update---------------->
+
+
+<!-------Archive----------------->
+    <div class="modal fade" id="EditModalArchive{{ item.id }}" tabindex="-1" aria-labelledby="EditModalArchive{{ item.id }}" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg rounded-3">
+          <form action="/menu/list/archive/{{ item.id }}" method="POST">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="EditModalLabel">Item: {{item.name}}  Code: {{ item.batch_code }}</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          
+          <input type="number" name="value_archive" value="1" hidden>
+          <input type="text" name="item_name" value="{{ item.name }}" hidden>
+          <div class="modal-body d-flex justify-content-center gap-3">
+          
+            <button type="submit" class="btn btn-success flex-fill">Archive Yes</button>
+            <button type="button" class="btn btn-danger flex-fill" data-bs-dismiss="modal">Archive No</button>
+          </div>
+    
+          <div class="modal-footer justify-content-between">
+            <small class="text-muted">Please make sure all fields are correct before submitting.</small>
+          </div>
+        </form>
+        </div>
+      </div>
+    </div>
+<!-------Archive----------------->
+
     {% endfor %}
   </div>
 

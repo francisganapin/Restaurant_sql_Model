@@ -8,6 +8,9 @@ from typing import Optional
 
 from datetime import date
 
+#user
+#-------------------------------------------------------------------------------------------------------------------------------|
+
 
 class RoleEnum(str,Enum):
 
@@ -29,9 +32,15 @@ class User(SQLModel,table=True):
     password:        str                 = Field()
     role:            RoleEnum            = Field(default=RoleEnum.admin)
 
+
     image_url:       str                 = Field(default=None, max_length=512)
 
 #-----------------------------------------------------------------------------------------------------------------------------------------#
+
+
+
+#Menu
+#-------------------------------------------------------------------------------------------------------------------------------|
 class CategoryMenuEnum(str,Enum):
 
     Main_Course = 'Main_Course'
@@ -47,37 +56,78 @@ class CategoryMenuEnum(str,Enum):
 
     
 class Menu_List(SQLModel,table=True):
-    #Name           #Type                # field                                          #Admin      #Employee     #Viewer
-    id:             int                  = Field(default=None,primary_key=True)           #Visible    #Visible      #Hide    
-    quantity:       int                  = Field(nullable=False)                          #Visible    #Visible      #Hide
-    price:          float                = Field(nullable=False,)                         #Visible    #Visible      #Visible
+    #Name           #Type                   # field                                          #Admin      #Employee     #Viewer
+    id:             int                     = Field(default=None,primary_key=True)           #Visible    #Visible      #Hide    
+    quantity:       int                     = Field(nullable=False)                          #Visible    #Visible      #Hide
+    price:          float                   = Field(nullable=False,)                         #Visible    #Visible      #Visible
 
-    category:      CategoryMenuEnum      = Field()    
+    category:      CategoryMenuEnum         = Field()    
 
-    name:           str                  = Field(nullable=False,max_length=56)            #Visible    #Visible      #Visible
-    description:    str                  = Field(nullable=False,max_length=56)            #Visible    #Visible      #Visible
+    name:           str                     = Field(nullable=False,max_length=56)            #Visible    #Visible      #Visible
+    description:    str                     = Field(nullable=False,max_length=56)            #Visible    #Visible      #Visible
 
 
-    image_url:      str                  = Field(default=None, max_length=512)           #Visible     #Visible      #Visible
+    image_url:      str                     = Field(default=None, max_length=512)           #Visible     #Visible      #Visible
 
-    orders:         list['Order_list']   = Relationship(back_populates='menu')           #Visible     #Visible      #Hide
+    orders:         list['Order_list']      = Relationship(back_populates='menu')           #Visible     #Visible      #Hide
 
-    is_archive:     bool                 = Field(default=False)                           #Visible     #Hide        #Hide
+    is_archive:     bool                    = Field(default=False)                           #Visible     #Hide        #Hide
    
-
-class Order_list(SQLModel,table=True):
-    id:         int          = Field(default=None,primary_key=True)
-    menu_id:     int         = Field(foreign_key='menu_list.id')
-    quantity:    int         = Field(nullable=False)
-    total:       float       = Field()    
-
-    menu:Optional['Menu_List'] = Relationship(back_populates='orders')
-
-    @property
-    def total(self) -> float:
-            return self.menu_id.price * self.quantity if self.menu_id else 0.0
+    def __str__(self):
+        return self.name
+#-------------------------------------------------------------------------------------------------------------------------------|
 
 
+
+
+#Order
+#-------------------------------------------------------------------------------------------------------------------------------|
+
+class TableEnum(str, Enum): 
+
+    table1 = 'table1'
+    table2 = 'table2'
+    table3 = 'table3'
+    table4 = 'table4'
+    table5 = 'table5'
+
+class Order_list(SQLModel, table=True):
+    
+    id:             int                     = Field(default=None, primary_key=True)
+    menu_id:        int                     = Field(foreign_key='menu_list.id')
+    quantity:       int                     = Field(nullable=False)
+    total:          float                   = Field(nullable=False)
+    table:          TableEnum               = Field(nullable=False)
+
+    #order_date:     datetime.date           = Field(default_factory=datetime.date.today)
+    # relationship to Menu_List
+    menu: Optional["Menu_List"] = Relationship(back_populates="orders")
+    income: Optional["Income_table"] = Relationship(back_populates="order")
+#------------------------------------------------------------------------------------------------------
+
+class PaymentEnum(str,Enum):
+    Cash =   'Cash'
+    Online = 'Online'
+
+    # force  it  value when seeing the front end
+    def __str__(self):
+        return self.value
+
+
+class Income_table(SQLModel, table=True):
+
+    id:             int                     = Field(default=None, primary_key=True)
+    order_id:       int                     = Field(foreign_key='order_list.id')
+    order_date:     datetime.date           = Field(default_factory=datetime.date.today)
+    income:         float                   = Field(nullable=False)
+    payment_type:   PaymentEnum             = Field()
+    image_url:       str                    = Field(default='/static/payment/')
+    order_list_item: str                    = Field()
+    # relationship to Menu_List
+    order: Optional[Order_list] = Relationship(back_populates="income")
+    
+#kitchen
+#------------------------------------------------------------------------------------------------------
 class UnitEnum(str,Enum):
     kg = 'kg'
     g = 'g'
