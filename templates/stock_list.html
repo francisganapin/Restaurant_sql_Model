@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stock List - Rubia Restaurant System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: 	#b6a897;
+      padding-top: 70px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .navbar {
+      background-color: #198754;
+    }
+
+    .navbar .nav-link,
+    .navbar .navbar-brand {
+      color: #fff !important;
+    }
+
+    .navbar .nav-link:hover {
+      color: #d4f4e0 !important;
+    }
+
+    .form-section {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+      padding: 25px;
+      max-width: 900px;
+      margin: 0 auto 30px;
+    }
+
+    .search-button {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .search-button input,
+    .search-button select {
+      flex: 1 1 200px;
+    }
+
+    .styled-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+      background-color: white;
+    }
+
+    .styled-table thead {
+      background-color: #009879;
+      color: white;
+      text-align: center;
+    }
+
+    .styled-table th, .styled-table td {
+      padding: 12px 15px;
+      text-align: center;
+    }
+
+    .styled-table tbody tr:nth-of-type(even) {
+      background-color: #f9f9f9;
+    }
+
+    .styled-table tbody tr:hover {
+      background-color: #e6f7ef;
+    }
+
+    .pagination-links {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+      color:#009879;
+    }
+
+    h2.section-title {
+      font-weight: 700;
+      color: white;
+
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .container{
+        margin-top:50px;
+    }
+
+    .pagination-links a {
+    background-color: #009879;
+    color: white; 
+    padding: 8px 12px; 
+    border-radius: 5px; 
+    text-decoration: none; 
+        font-weight: bold;
+    }
+
+    .pagination-links a:hover {
+        background-color: #00755E; 
+    }
+
+
+    .flash.success {
+        color: green;
+    }
+    .flash.error {
+        color: red;
+    }
+
+  </style>
+</head>
+
+<body>
+  
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+      <!-- Left branding -->
+      <a class="navbar-brand fw-bold" href="#">Rubia Restaurant</a>
+  
+      <!-- Welcome & Role -->
+      <div class="d-flex flex-column text-white me-3">
+        <span class="fw-bold">Welcome, {{ username }}!</span>
+        <span class="fw-bold">Role: {{ role }}</span>
+      </div>
+  
+      <!-- Navbar Toggler for Mobile -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+  
+      <!-- Navbar Content -->
+      <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+  
+           <!-- Centered Search Form -->
+        <form class="d-flex flex-wrap align-items-center justify-content-center mx-auto my-2"
+        action="/stock/list" method="POST" style="max-width: 800px; width: 100%; gap: 0.5rem;">
+
+          <div class="flex-grow-1" style="min-width: 180px;">
+          <input type="text" class="form-control" name="query_name" placeholder="Search by name">
+          </div>
+
+          <div style="min-width: 160px;">
+          <select id="category" name="query_category" class="form-select">
+          <option value="">Select Category</option>
+          <option value="Dairy">Dairy</option>
+          <option value="Seafood">Seafood</option>
+          <option value="Spices">Spices</option>
+          <option value="Meat">Meat</option>
+          </select>
+          </div>
+
+          <div>
+          <button type="submit" class="btn btn-success">Search</button>
+          </div>
+
+          {% if role == 'ADMIN' %}
+          <div>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#EditModalInsert">
+          Insert
+          </button>
+          </div>
+          {% endif %}
+          </form>
+
+        <!-- Right-side Nav Links -->
+        <ul class="navbar-nav align-items-center">
+          {% if role in ['ADMIN', 'EMPLOYEE'] %}
+          <li class="nav-item"><a class="nav-link text-white" href="/order/list">Order List</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="/menu/list">List List</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="/analytic/list">Analytic List</a></li>
+          {% endif %}
+          <li class="nav-item"><a class="nav-link text-white" href="/logout">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+
+<div id="myDiv">
+  <div class="container mt-4">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+            <strong>{{ msg }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+</div>
+
+
+  <div class="container">
+
+    <h2 class="section-title"><p class="color:white;">📦 Stock List</p></h2>
+
+
+
+
+
+    
+    <div class="modal fade" id="EditModalInsert" tabindex="-1" aria-labelledby="EditModalInsert" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg rounded-3">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="EditModalLabel">Insert Item</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-4">
+
+            <form action="/stock/list/insert/" method="POST" enctype="multipart/form-data">
+              <div class="mb-3">
+                <label for="titleInput" class="form-label">Name</label>
+                <input type="text" name="item_name" class="form-control" id="item_name" value="" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="descriptionInput" class="form-label">Price</label>
+                <input type="number" name="item_price" class="form-control" id="item_price" value="" step="0.01" required>
+              </div>
+           
+              <div class="mb-3">
+                <label for="referenceInput" class="form-label">Quantity</label>
+                <input type="number" name="item_quantity" class="form-control" id="item_quantity" value="" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="descriptionInput" class="form-label">Units</label>
+                <select  class="form-control" name="item_unit" id="item_unit" required>
+                  <option value="kg">Kg</option>
+                  <option value="g">Grams</option>
+                  <option value="pcs">Pieces</option>
+                  <option value="L">Litters</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label for="descriptionInput" class="form-label">Category</label>
+                <select  class="form-control" name="item_category" id="item_category" required >
+                  <option value="Dairy">Dairy</option>
+                  <option value="Seafood">Seafood</option>
+                  <option value="Spices">Spices</option>
+                  <option value="Meat">Meat</option>
+                  <option value="Beverages">Beverages</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label for="referenceInput" class="form-label">Batch Code</label>
+                <input type="text" name="item_batch" class="form-control" id="item_batch" minlength="6" maxlength="6" value="" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="referenceInput" class="form-label">Delivery</label>
+                <input type="date" name="item_delivery" class="form-control" id="item_delivery" value="" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="referenceInput" class="form-label">Expiration</label>
+                <input type="date" name="item_expiry" class="form-control" id="item_expiry" value="" required>
+              </div>
+            
+              <div class="d-grid">
+                <button type="submit" class="btn btn-success">Insert Item</button>
+              </div>
+            </form>
+            
+          </div>
+          <div class="modal-footer justify-content-between">
+            <small class="text-muted">Please make sure all fields are correct before submitting.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+   
+    <div class="table-responsive">
+      <table class="styled-table mt-4">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Unit</th>
+
+            {% if role == 'ADMIN' or role == 'EMPLOYEE' %}
+
+                <th>Batch Code</th>
+                <th>Delivery Date</th>
+                <th>Spoilage Date</th>
+
+                {% if role == 'ADMIN' %}
+                        <th>Update</th>
+                        <th>Archive</th>
+                {% elif role =='EMPLOYEE' %}
+                        <th>Archive</th>
+                {% endif %}
+            {% elif role == 'EMPLOYEE' %}
+                <!-- hide batch,deliver,spoilage and action-->
+            {% endif %}
+
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for item in stock_list %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.category }}</td>
+            <td>{{ item.price }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.unit }}</td>
+            {% if role == 'ADMIN' or role == 'EMPLOYEE' %}
+            <td>{{ item.batch_code }}</td>
+            <td>{{ item.delivery_date }}</td>
+
+            {% if item.spoilage_date >= date_condition %}
+                <td>
+                  <p style="color:green">{{ item.spoilage_date }}</p>
+                </td>
+            {% else %}
+                <td>
+                  <p style="color:red">{{ item.spoilage_date }}</p>
+                   
+                </td>
+            {% endif %}
+        
+            {% if role == 'ADMIN' %}
+            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#EditModalUpdate{{ item.id }}">Update</button></td>
+            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#EditModalArchive{{ item.id }}">Archive</button></td>
+            {% elif role == 'EMPLOYEE' %}
+            <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#EditModalUpdate{{ item.id }}">Update</button></td>
+            {% endif %}
+
+            {% elif role == 'EMPLOYEE' %}
+
+                <!-- hide batch,deliver,spoilage and action-->
+
+            {% endif %}
+
+            <div class="modal fade" id="EditModalUpdate{{ item.id }}" tabindex="-1" aria-labelledby="EditModalLabel{{ item.id }}" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content shadow-lg rounded-3">
+                  <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="EditModalLabel">Code:{{ item.batch_code }}</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body p-4">
+  
+                    <form action="/stock/list/update/{{ item.id }}" method="POST" enctype="multipart/form-data">
+                      <div class="mb-3">
+                        <label for="titleInput" class="form-label">Name</label>
+                        <input type="text" name="item_name" class="form-control" id="item_name" value="{{ item.name }}" readonly>
+                      </div>
+
+                      <!--- limit the use  to edit if they are employee or viewer -->
+                      {% if role == 'ADMIN' %}
+                      <div class="mb-3">
+                        <label for="descriptionInput" class="form-label">Price</label>
+                        <input type="number" name="item_price" class="form-control" id="item_price" value="{{ item.price }}" step="0.01">
+                      </div>
+                      {% endif %}
+
+                      <div class="mb-3">
+                        <label for="referenceInput" class="form-label">Quantity</label>
+                        <input type="number" name="item_quantity" class="form-control" id="item_quantity" value="{{ item.quantity }}">
+                      </div>
+                      <div class="d-grid">
+                        <button type="submit" class="btn btn-success">Update Item</button>
+                      </div>
+                    </form>
+                    
+                  </div>
+                  <div class="modal-footer justify-content-between">
+                    <small class="text-muted">Please make sure all fields are correct before submitting.</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+        
+            <div class="modal fade" id="EditModalArchive{{ item.id }}" tabindex="-1" aria-labelledby="EditModalArchive{{ item.id }}" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content shadow-lg rounded-3">
+                  <form action="/stock/list/archive/{{ item.id }}" method="POST">
+                  <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="EditModalLabel">Item: {{item.name}}  Code: {{ item.batch_code }}</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  
+                  <input type="number" name="value_archive" value="1" hidden>
+                  <input type="text" name="item_name" value="{{ item.name }}" hidden>
+                  <div class="modal-body d-flex justify-content-center gap-3">
+                  
+                    <button type="submit" class="btn btn-success flex-fill">Archive Yes</button>
+                    <button type="button" class="btn btn-danger flex-fill" data-bs-dismiss="modal">Archive No</button>
+                  </div>
+            
+                  <div class="modal-footer justify-content-between">
+                    <small class="text-muted">Please make sure all fields are correct before submitting.</small>
+                  </div>
+                </form>
+                </div>
+              </div>
+            </div>
+
+          </tr>
+
+
+
+          {% endfor %}
+   
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination-links">
+      {% if page > 1 %}
+        <a href="{{ url_for('stock_list', page=page-1) }}" class="btn btn-outline-secondary btn-sm">← Previous</a>
+      {% endif %}
+      {% if page < total_pages %}
+        <a href="{{ url_for('stock_list', page=page+1) }}" class="btn btn-outline-secondary btn-sm">Next →</a>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

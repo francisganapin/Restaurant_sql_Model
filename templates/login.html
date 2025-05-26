@@ -1,0 +1,136 @@
+<style>
+    .center-error{
+        margin-left:auto;
+        margin-right:auto;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+
+    }
+    .flash.success {
+        color: green;
+    }
+    .flash.error {
+        color: red;
+    }
+
+</style>
+
+
+<body>
+
+
+
+    <div class="container">
+
+        <div class="center-error">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, msg in messages %}
+              <div class="flash {{ category }}">
+                <p style="font-size:50px;">
+                    {{ msg }}
+                </p>
+            </div>
+            {% endfor %}
+            {% endwith %}
+        </div>
+       
+        <form method="POST" enctype="multipart/form-data">
+            
+            <h1 class="heading">Restaurant Login</h1>
+      
+            <input id="username" class="input" name="username" id="username" type="text" placeholder="Username" />
+            <input id="password" class="input" name="password" id="password" type="password" placeholder="Password" />
+            <button type="submit" class="button">Submit</button>
+            <p id="error-message" class="error-message"></p> <!-- Add this line -->
+        </form>
+        
+    </div>
+
+</body>
+
+<style>
+    .heading {
+        margin-bottom: 2rem; /* Add space below the heading */
+        font-family: "SF Pro";
+        font-size: 2rem;
+    }
+
+    body {
+        background-color: 	#ffe5cc;
+    }
+
+    .container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center; /* Center align text inside the container */
+    }
+
+    .input {
+        font-family: "SF Pro";
+        max-width: 190px;
+        padding: 0.875rem;
+        font-size: 1rem;
+        border: 1.5px solid #000;
+        border-radius: 0.5rem;
+        box-shadow: 2.5px 3px 0 #000;
+        outline: none;
+        transition: ease 0.25s;
+        display: block; /* Ensure inputs are on separate lines */
+        margin: 0 auto 1rem auto; /* Center inputs and add margin between them */
+    }
+
+    .input:focus {
+        box-shadow: 5.5px 7px 0 black;
+    }
+
+    /* From Uiverse.io by alexroumi */
+    button {
+        padding: 15px 25px;
+        border: unset;
+        border-radius: 15px;
+        color: #212121;
+        z-index: 1;
+        background: #e8e8e8;
+        position: relative;
+        font-weight: 1000;
+        font-size: 17px;
+        box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+        transition: all 250ms;
+        overflow: hidden;
+        display: block; /* Make button a block element */
+        margin: 0 auto; /* Center the button */
+    }
+
+    button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 0;
+        border-radius: 15px;
+        background-color: #212121;
+        z-index: -1;
+        box-shadow: 4px 8px 19px -3px rgba(0,0,0,0.27);
+        transition: all 250ms;
+    }
+
+    button:hover {
+        color: #e8e8e8;
+    }
+
+    button:hover::before {
+        width: 100%;
+    }
+
+    .error-message {
+        color: red;
+        font-family: "SF Pro";
+        font-size: 1rem;
+        margin-top: 1rem;
+    }
+</style>
+</html>
