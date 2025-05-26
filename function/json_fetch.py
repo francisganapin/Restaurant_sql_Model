@@ -43,7 +43,10 @@ def json_stock_list():
     except ValueError as e:
         return jsonify({"error": "Session invalid or database issue", "details": str(e)}), 500
 
+<<<<<<< HEAD
 
 
 if __name__ == '__main__':
     app.run(debug=True)
+=======
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676

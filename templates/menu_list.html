@@ -26,6 +26,7 @@
       color: #d4f4e0 !important;
     }
 
+<<<<<<< HEAD
     .navbar .form-control,
     .navbar .form-select {
     width: auto;
@@ -34,6 +35,8 @@
     .search_div{
       justify-content: center;
     }
+=======
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
     .form-section {
       background-color: white;
       border-radius: 12px;
@@ -54,8 +57,13 @@
       flex: 1 1 200px;
     }
 
+<<<<<<< HEAD
       .product-image {
       height: 130px; /* reduced from 200px */
+=======
+    .product-image {
+      height: 200px;
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
       width: 100%;
       object-fit: cover;
       border-top-left-radius: 0.5rem;
@@ -63,6 +71,7 @@
     }
 
     .card.product-card {
+<<<<<<< HEAD
       font-size: 0.9rem; /* slightly smaller font */
       padding: 5px;
       border-radius: 10px;
@@ -80,6 +89,14 @@
     .card-body {
       padding: 12px;
     }
+=======
+      transition: transform 0.2s ease-in-out;
+      border: none;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
     .card.product-card:hover {
       transform: scale(1.02);
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
@@ -134,15 +151,19 @@
     .navbar-brand + .navbar-brand {
       margin-left: 10px;
     }
+<<<<<<< HEAD
     
     #myDiv {
     display: none;
 }
 
+=======
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
   </style>
 </head>
 
 <body>
+<<<<<<< HEAD
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container-fluid">
       <!-- Left branding -->
@@ -215,6 +236,60 @@
   <h2 class="section-title">Menu List</h2>
 
   <div class="row g-5">
+=======
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="#">Rubia Restaurant</a>
+    <a class="navbar-brand fw-bold" href="#">Welcome, {{ username }}!</a>
+    <a class="navbar-brand fw-bold" href="#">Role: {{ role }}</a>
+
+    <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon bg-light"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link active" href="#">Order List</a></li>
+        <li class="nav-item"><a class="nav-link" href="/stock/list">Stock List</a></li>
+        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="center-error">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% for category, msg in messages %}
+    <div class="flash {{ category }}">
+      <p style="font-size:50px;">
+          {{ msg }}
+      </p>
+  </div>
+  {% endfor %}
+  {% endwith %}
+</div>
+
+
+<div class="container py-5">
+  <h2 class="section-title">Menu List</h2>
+
+  <form class="form-section" action="/menu/list" method="POST">
+    <div class="search-button">
+      <input type="text" class="form-control" name="query_name" placeholder="Search by name">
+      <select id="category" name="query_category" class="form-select">
+        <option value="">Select Category</option>
+        <option value="Pasta">Pasta</option>
+        <option value="Seafood">Seafood</option>
+        <option value="Dessert">Dessert</option>
+        <option value="Salad">Salad</option>
+        <option value="Beverages">Beverages</option>
+        <option value="Main_Course">Main Course</option>
+      </select>
+      <button type="submit" class="btn btn-success">Search</button>
+    </div>
+  </form>
+
+  <div class="row g-4">
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
     {% for item in menu_list %}
     <div class="col-md-4 col-sm-6">
       <div class="card product-card shadow-sm">
@@ -224,6 +299,7 @@
 
     
           <p class="card-text text-muted">{{ item.description }}</p>
+<<<<<<< HEAD
           
           {% if role == 'ADMIN' %}
             {% if item.is_archive == True %}
@@ -233,11 +309,17 @@
           {% endif %}
 
           {% if item.category == 'MAIN_COURSE' %}
+=======
+      
+
+          {% if item.category == 'Main_Course' %}
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
             <p class="card-text text-muted">Main Course</p>
           {% else %}
             <p class="card-text text-muted">{{ item.category }}</p>
           {% endif %}
 
+<<<<<<< HEAD
           {% if item.quantity == 0 %}
           <p class="card-text fw-bold">Out of stock</p>
        
@@ -247,6 +329,11 @@
 
           <p class="card-text fw-bold">₱{{ item.price }}</p>
           {% if role == 'ADMIN' %}
+=======
+          <p class="card-text fw-bold">Stock: {{ item.quantity }}</p>
+          <p class="card-text fw-bold">₱{{ item.price }}</p>
+          {% if role == 'admin' %}
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#EditModalUpdate{{ item.id }}">Edit</button>
 
 <!---- out of stock logic for button -->
@@ -258,8 +345,13 @@
 
 <!---- out of stock logic for button -->
 
+<<<<<<< HEAD
             <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#EditModalArchive{{ item.id }}">Archive</button>
           {% elif role == 'EMPLOYEE' %}
+=======
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#EditModalArchive{{ item.id }}">Archive</button>
+          {% elif role == 'employee' %}
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 
 <!---- out of stock logic for button -->
             {% if item.quantity != 0 %}
@@ -317,11 +409,19 @@
                 <label for="referenceInput" class="form-label">Table</label>
 
                 <select id="table_entry" name="table_entry" class="form-select">
+<<<<<<< HEAD
                   <option value="TABLE1">Table 1</option>
                   <option value="TABLE2">Table 2</option>
                   <option value="TABLE3">Table 3</option>
                   <option value="TABLE4">Table 4</option>
                   <option value="TABLE5">Table 5</option>
+=======
+                  <option value="table1">Table 1</option>
+                  <option value="table2">Table 2</option>
+                  <option value="table3">Table 3</option>
+                  <option value="table4">Table 4</option>
+                  <option value="table5">Table 5</option>
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
              
                 </select>
 
@@ -404,6 +504,7 @@
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           
+<<<<<<< HEAD
 
           <input type="text" name="item_name" value="{{ item.name }}" hidden>
           <div class="modal-body d-flex justify-content-center gap-3">
@@ -412,6 +513,14 @@
             <button type="submit" name="value_archive" value="1" class="btn btn-danger flex-fill">Archive On</button>
             <button type="submit" name="value_archive" value="0" class="btn btn-success flex-fill " data-bs-dismiss="modal">Archive Off</button>
 
+=======
+          <input type="number" name="value_archive" value="1" hidden>
+          <input type="text" name="item_name" value="{{ item.name }}" hidden>
+          <div class="modal-body d-flex justify-content-center gap-3">
+          
+            <button type="submit" class="btn btn-success flex-fill">Archive Yes</button>
+            <button type="button" class="btn btn-danger flex-fill" data-bs-dismiss="modal">Archive No</button>
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
           </div>
     
           <div class="modal-footer justify-content-between">
@@ -434,7 +543,10 @@
       <a href="{{ url_for('menu_list', page=page+1) }}">Next →</a>
     {% endif %}
   </div>
+<<<<<<< HEAD
   
+=======
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>

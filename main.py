@@ -1,6 +1,10 @@
 import os
 import webbrowser
+<<<<<<< HEAD
 from datetime import date
+=======
+from datetime import date, datetime
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 
 from flask import (
     Flask, render_template, request,
@@ -11,6 +15,7 @@ from flask_bcrypt import Bcrypt
 
 from sqlmodel import select, Session as DbaseSession
 
+<<<<<<< HEAD
 from function.model import (User, 
                             Kitchen_Stock, 
                             Menu_List, 
@@ -18,11 +23,15 @@ from function.model import (User,
                             Income_table,
                             Income_Holder, 
                             engine)
+=======
+from function.model import User, Kitchen_Stock, Menu_List, Order_list,Income_table, engine
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 
 from sqlalchemy.orm import selectinload
 
 from datetime import date
 
+<<<<<<< HEAD
 from werkzeug.utils import secure_filename
 
 
@@ -30,11 +39,16 @@ from werkzeug.utils import secure_filename
 
 
 
+=======
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 today = date.today()
 
 app = Flask(__name__)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 app.secret_key = "sadwq‑dsdw1‑3212‑dsa"  
 
 bcrypt = Bcrypt(app)
@@ -65,7 +79,11 @@ def login():
             flask_session['role']     = user.role.value
             flask_session['image_ur'] = user.image_url
 
+<<<<<<< HEAD
             return redirect(url_for('menu_list'))
+=======
+            return redirect(url_for('stock_list'))
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
         else:
             flash('Invalid username or password was Invalid','error')
 
@@ -81,12 +99,15 @@ def logout():
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
+<<<<<<< HEAD
 @app.route('/you-dont-have-permission/403/')
 def restrict_access():
     return render_template('403.html', redirect_to=url_for('menu_list'))
 
 
 
+=======
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 
 @app.route("/menu/list",methods=['GET','POST'])
 def menu_list():
@@ -105,12 +126,17 @@ def menu_list():
     page = request.args.get('page',1,type=int) 
     PER_PAGE = 6
 
+<<<<<<< HEAD
 
     with DbaseSession(engine) as session:
         if role == 'ADMIN':
             stmt = select(Menu_List)
         elif role  in ['EMPLOYEE','VIEWER']:
             stmt = select(Menu_List).where(Menu_List.is_archive == False)
+=======
+    with DbaseSession(engine) as session:
+        stmt = select(Menu_List).where(Menu_List.is_archive == False)
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 
         
         if request.method == 'POST':
@@ -158,9 +184,15 @@ def menu_list_archive(id):
      #avoid to viewer to update this
      
     role = flask_session.get('role')
+<<<<<<< HEAD
     if role != 'ADMIN':
         flash('You cannot Edit this','error')
         return redirect(url_for('restrict_access'))
+=======
+    if role != 'admin':
+        flash('You cannot Edit this','error')
+        return redirect(url_for('menu_list'))
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
     
     with DbaseSession(engine) as session:
         stmt = session.get(Menu_List, id)
@@ -185,7 +217,11 @@ def menu_list_archive(id):
 @app.route("/menu/list/update/<int:id>",methods=['GET','POST'])
 def menu_list_update(id):
 
+<<<<<<< HEAD
 
+=======
+    message = ''
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 
     # avoid who are not login user to update
     if 'user_id' not in flask_session:
@@ -193,10 +229,16 @@ def menu_list_update(id):
 
     #avoid to viewer to update this
     role = flask_session.get('role')
+<<<<<<< HEAD
     if role not in ['ADMIN', 'EMPLOYEE']:
         flash('You cannot Edit this','error')
         return redirect(url_for('restrict_access'))
     
+=======
+    if role not in ['admin', 'employee']:
+        flash('You cannot Edit this','error')
+        return redirect(url_for('menu_list'))
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
     
     with DbaseSession(engine) as session:
         stmt = session.get(Menu_List, id)
@@ -232,10 +274,16 @@ def menu_list_order(id):
 
     #avoid to viewer to update this
     role = flask_session.get('role')
+<<<<<<< HEAD
     if role not in ['ADMIN', 'EMPLOYEE']:
         flash('You cannot Edit this','error')
         return redirect(url_for('restrict_access'))
     
+=======
+    if role not in ['admin', 'employee']:
+        flash('You cannot Edit this','error')
+        return redirect(url_for('menu_list'))
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
     
     with DbaseSession(engine) as session:
         stmt = session.get(Menu_List, id)
@@ -258,9 +306,15 @@ def menu_list_order(id):
                 #today = date.today()
                 #order_date = today.strftime('%Y-%m-%d')  
 
+<<<<<<< HEAD
                 stmt2 = Order_List(
                                    menu_id      = id, 
                                    quantity     = quantity,
+=======
+                stmt2 = Order_list(
+                                   menu_id      =id, 
+                                   quantity     =quantity,
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
                                    total        = total_price,
                                    table        = table
                                    #order_date = order_date
@@ -293,6 +347,7 @@ def stock_list():
     username = flask_session.get('username')
     role =   flask_session.get('role')
 
+<<<<<<< HEAD
     #avoid to viewer to access this
     role = flask_session.get('role')
     if role not in ['ADMIN', 'EMPLOYEE']:
@@ -301,6 +356,8 @@ def stock_list():
     
 
 
+=======
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
     # set the page where we at
     page = request.args.get('page',1,type=int) 
 
@@ -347,7 +404,11 @@ def stock_list():
 @app.route("/stock/list/update/<int:id>",methods=['GET','POST'])
 def stock_list_update(id):
 
+<<<<<<< HEAD
 
+=======
+    message = ''
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 
     # avoid who are not login user to update
     if 'user_id' not in flask_session:
@@ -355,9 +416,15 @@ def stock_list_update(id):
 
     #avoid to viewer to update this
     role = flask_session.get('role')
+<<<<<<< HEAD
     if role not in ['ADMIN', 'EMPLOYEE']:
         flash('You cannot Edit this','error')
         return redirect(url_for('restrict_access'))
+=======
+    if role not in ['admin', 'employee']:
+        flash('You cannot Edit this','error')
+        return redirect(url_for('stock_list'))
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
     
     with DbaseSession(engine) as session:
         stmt = session.get(Kitchen_Stock, id)
@@ -382,14 +449,21 @@ def stock_list_update(id):
 
 @app.route('/stock/list/archive/<int:id>',methods=['GET','POST'])
 def stock_list_archive(id):
+<<<<<<< HEAD
     
+=======
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
         # avoid who are not login user to update
     if 'user_id' not in flask_session:
         return redirect(url_for('login'))
      #avoid to viewer to update this
      
     role = flask_session.get('role')
+<<<<<<< HEAD
     if role != 'ADMIN':
+=======
+    if role != 'admin':
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
         flash('You cannot Edit this','error')
         return redirect(url_for('stock_list'))
     
@@ -423,11 +497,20 @@ def stock_list_insert():
      #avoid to viewer to update this
      
     role = flask_session.get('role')
+<<<<<<< HEAD
     if role != 'ADMIN':
         flash('You cannot Edit this','error')
         return redirect(url_for('restrict_access'))
      
 
+=======
+    if role != 'admin':
+        flash('You cannot Edit this','error')
+        return redirect(url_for('stock_list'))
+    
+
+    
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
     if request.method == 'POST':
         item_name           =   request.form.get('item_name')
         item_quantity       =   request.form.get('item_quantity')
@@ -479,6 +562,7 @@ def order_list():
     username = flask_session.get('username')
     role =   flask_session.get('role')
 
+<<<<<<< HEAD
          
     #avoid to viewer to update this
     role = flask_session.get('role')
@@ -490,12 +574,26 @@ def order_list():
         stmt = select(Order_List).options(selectinload(Order_List.menu))
         orders = session.exec(stmt).all()
 
+=======
+    with DbaseSession(engine) as session:
+        stmt = select(Order_list).options(selectinload(Order_list.menu))
+        orders = session.exec(stmt).all()
+
+        print(orders)
+        count  = len(set(order.table for order in orders)) # we use this to count only range
+        count_new = count + 1
+        print(count)
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 
     context = {
         'username': username,
         'role': role,
         'order_list':orders,
+<<<<<<< HEAD
     
+=======
+        'count':count_new #we use this range print on order
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
         
     }
 
@@ -511,15 +609,23 @@ def order_list_payment():
         return redirect(url_for('login'))
      #avoid to viewer to update this
      
+<<<<<<< HEAD
     #avoid to viewer to update this
     role = flask_session.get('role')
     if role not in ['ADMIN', 'EMPLOYEE']:
         flash('You cannot Edit this','error')
         return redirect(url_for('restrict_access'))
+=======
+    role = flask_session.get('role')
+    if role != 'admin':
+        flash('You cannot Edit this','error')
+        return redirect(url_for('stock_list'))
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
     
 
     
     if request.method == 'POST':
+<<<<<<< HEAD
         input_table               =   request.form.get('input_table').strip()
         print(input_table)
 
@@ -698,4 +804,29 @@ def view_payment_analytic(_id):
     return render_template('analytic_payment_picture.html',**context)
 if __name__ == '__main__':
     webbrowser.open('http://127.0.0.1:5000/menu/list')
+=======
+        item_name           =   request.form.get('item_name')
+ 
+
+        try:
+            new_item = Income_table(
+                   
+                    )
+             
+
+            with DbaseSession(engine) as session:
+                session.add(new_item)
+                session.commit()
+
+                flash(f'Item  {item_name} was added successfully', 'success')
+
+        except Exception as e:
+
+                flash(f'Item {item_name} was Insert error.', 'error')
+
+    return redirect(url_for('stock_list'))
+
+if __name__ == '__main__':
+    webbrowser.open('http://127.0.0.1:5000/login')
+>>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
     app.run(debug=True)
