@@ -5,33 +5,20 @@ import datetime
 from typing import Optional
 
 
-<<<<<<< HEAD
 from datetime import date
 
 
 
 
                                                 #Restaurant System
-=======
-
-from datetime import date
-
-#user
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 #-------------------------------------------------------------------------------------------------------------------------------|
 
 
 class RoleEnum(str,Enum):
 
-<<<<<<< HEAD
     ADMIN =     'ADMIN'     #Enter new item,update,archive
     EMPLOYEE =  'EMPLOYEE'  #Edit
     VIEWER =    'VIEWER'    #read-only
-=======
-    admin =     'admin'     #Enter new item,update,archive
-    employee =  'employee'    #Edit
-    viewer =    'viewer'    #read-only
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
     
     def __self__(self):
         return self.value
@@ -45,7 +32,6 @@ class User(SQLModel,table=True):
 
     #bcrypt hash  for password
     password:        str                 = Field()
-<<<<<<< HEAD
     role:            RoleEnum            = Field(default=RoleEnum.ADMIN)
 
     image_url:       str                 = Field(default=None, max_length=512)
@@ -67,55 +53,24 @@ class CategoryMenuEnum(str,Enum):
     PIZZA       = 'PIZZA'
     DESSERT     = 'DESSERT'
 
-=======
-    role:            RoleEnum            = Field(default=RoleEnum.admin)
-
-
-    image_url:       str                 = Field(default=None, max_length=512)
-
-#-----------------------------------------------------------------------------------------------------------------------------------------#
-
-
-
-#Menu
-#-------------------------------------------------------------------------------------------------------------------------------|
-class CategoryMenuEnum(str,Enum):
-
-    Main_Course = 'Main_Course'
-    Seafood = 'Seafood'
-    Pasta = 'Pasta'
-    Beverages = 'Beverages'
-    Salad   = 'Salad'
-    Pizza   = 'Pizza'
-    Dessert = 'Dessert'
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
     
     def __str__(self):
         return self.value
 
     
 class Menu_List(SQLModel,table=True):
-<<<<<<< HEAD
     # Field Name     | Type                                               |      Visibility:   Admin   | Employee    | Viewer
     # -------------- | --------- | ----------------- | -------- | --------                                              
-=======
-    #Name           #Type                   # field                                          #Admin      #Employee     #Viewer
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
     id:             int                     = Field(default=None,primary_key=True)           #Visible    #Visible      #Hide    
     quantity:       int                     = Field(nullable=False)                          #Visible    #Visible      #Hide
     price:          float                   = Field(nullable=False,)                         #Visible    #Visible      #Visible
 
-<<<<<<< HEAD
     category:       CategoryMenuEnum         = Field()    
-=======
-    category:      CategoryMenuEnum         = Field()    
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 
     name:           str                     = Field(nullable=False,max_length=56)            #Visible    #Visible      #Visible
     description:    str                     = Field(nullable=False,max_length=56)            #Visible    #Visible      #Visible
 
 
-<<<<<<< HEAD
     image_url:      str                     = Field(default=None, max_length=512)            #Visible     #Visible      #Visible
 
     orders:         list['Order_List']       = Relationship(back_populates='menu')           #Visible     #Visible     #Hide
@@ -153,27 +108,11 @@ class Menu_List(SQLModel,table=True):
 
 #-------------------------------------------------------------------------------------------------------------------------------|
 
-=======
-    image_url:      str                     = Field(default=None, max_length=512)           #Visible     #Visible      #Visible
-
-    orders:         list['Order_list']      = Relationship(back_populates='menu')           #Visible     #Visible      #Hide
-
-    is_archive:     bool                    = Field(default=False)                           #Visible     #Hide        #Hide
-   
-    def __str__(self):
-        return self.name
-#-------------------------------------------------------------------------------------------------------------------------------|
-
-
-
-
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 #Order
 #-------------------------------------------------------------------------------------------------------------------------------|
 
 class TableEnum(str, Enum): 
 
-<<<<<<< HEAD
     TABLE1 = 'TABLE1'
     TABLE2 = 'TABLE2'
     TABLE3 = 'TABLE3'
@@ -181,15 +120,6 @@ class TableEnum(str, Enum):
     TABLE5 = 'TABLE5'
 
 class Order_List(SQLModel, table=True):
-=======
-    table1 = 'table1'
-    table2 = 'table2'
-    table3 = 'table3'
-    table4 = 'table4'
-    table5 = 'table5'
-
-class Order_list(SQLModel, table=True):
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
     
     id:             int                     = Field(default=None, primary_key=True)
     menu_id:        int                     = Field(foreign_key='menu_list.id')
@@ -200,7 +130,6 @@ class Order_list(SQLModel, table=True):
     #order_date:     datetime.date           = Field(default_factory=datetime.date.today)
     # relationship to Menu_List
     menu: Optional["Menu_List"] = Relationship(back_populates="orders")
-<<<<<<< HEAD
 
 
     
@@ -229,14 +158,6 @@ class Income_Holder(SQLModel, table=True):
 class PaymentEnum(str,Enum):
     CASH =   'CASH'
     ONLINE = 'ONLINE'
-=======
-    income: Optional["Income_table"] = Relationship(back_populates="order")
-#------------------------------------------------------------------------------------------------------
-
-class PaymentEnum(str,Enum):
-    Cash =   'Cash'
-    Online = 'Online'
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 
     # force  it  value when seeing the front end
     def __str__(self):
@@ -244,7 +165,6 @@ class PaymentEnum(str,Enum):
 
 
 class Income_table(SQLModel, table=True):
-<<<<<<< HEAD
     id:              int                     = Field(default=None, primary_key=True)
     order_date:      datetime.date           = Field(default_factory=datetime.date.today)
     income:          float                   = Field(nullable=False)
@@ -276,25 +196,6 @@ class UnitEnum(str,Enum):
     KG = 'KG'
     G = 'G'
     PCS = ' PCS'
-=======
-
-    id:             int                     = Field(default=None, primary_key=True)
-    order_id:       int                     = Field(foreign_key='order_list.id')
-    order_date:     datetime.date           = Field(default_factory=datetime.date.today)
-    income:         float                   = Field(nullable=False)
-    payment_type:   PaymentEnum             = Field()
-    image_url:       str                    = Field(default='/static/payment/')
-    order_list_item: str                    = Field()
-    # relationship to Menu_List
-    order: Optional[Order_list] = Relationship(back_populates="income")
-    
-#kitchen
-#------------------------------------------------------------------------------------------------------
-class UnitEnum(str,Enum):
-    kg = 'kg'
-    g = 'g'
-    pcs = 'pcs'
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
     L = 'L'
 
     # force  it  value when seeing the front end
@@ -303,33 +204,20 @@ class UnitEnum(str,Enum):
 
 
 class CategoryEnum(str,Enum):
-<<<<<<< HEAD
     DAIRY = 'Dairy'
     SEAFOOD = 'Seafood'
     SPICES = 'Spices'
     MEAT = 'Meat'
     BEVERAGES = 'Beverages'
-=======
-    Dairy = 'Dairy'
-    Seafood = 'Seafood'
-    Spices = 'Spices'
-    Meat = 'Meat'
-    Beverages = 'Beverages'
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
     
     def __str__(self):
         return self.value
 
 
 class Kitchen_Stock(SQLModel,table=True):
-<<<<<<< HEAD
      # Field Name     | Type                                                | Visibility:   Admin | Employee | Viewer
     # -------------- | --------- | ----------------- | -------- | --------
 
-=======
-
-    #Name           #Type                # field                                          #Admin      #Employee     #Viewer
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
     id:             int                  = Field(default=None,primary_key=True)           #Visible    #Visible      #HIDE
     quantity:       int                  = Field()                                        #Visible    #Visible      #Visible
     price:          float                = Field()                                        #Visible    #Visible      #Visible
@@ -347,7 +235,6 @@ class Kitchen_Stock(SQLModel,table=True):
     # i add this so we could hide the item 
     is_archive:     bool                 = Field(default=False)                           #Visible     #Hide        #Hide
 
-<<<<<<< HEAD
     
     # -------------------------------------------
     # # Pseudocode: (Permission & Access Control)
@@ -377,12 +264,6 @@ engine = create_engine('sqlite:///model.db')
     #"postgresql+psycopg2://postgres:postgres1@localhost:5432/model"
 #)
 
-=======
-
-
-
-engine = create_engine('sqlite:///model.db')
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 SQLModel.metadata.create_all(engine)
 
 

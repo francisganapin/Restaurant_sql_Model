@@ -16,39 +16,6 @@
 
 </style>
 
-
-<body>
-
-
-
-    <div class="container">
-
-        <div class="center-error">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% for category, msg in messages %}
-              <div class="flash {{ category }}">
-                <p style="font-size:50px;">
-                    {{ msg }}
-                </p>
-            </div>
-            {% endfor %}
-            {% endwith %}
-        </div>
-       
-        <form method="POST" enctype="multipart/form-data">
-            
-            <h1 class="heading">Restaurant Login</h1>
-      
-            <input id="username" class="input" name="username" id="username" type="text" placeholder="Username" />
-            <input id="password" class="input" name="password" id="password" type="password" placeholder="Password" />
-            <button type="submit" class="button">Submit</button>
-            <p id="error-message" class="error-message"></p> <!-- Add this line -->
-        </form>
-        
-    </div>
-
-</body>
-
 <style>
     .heading {
         margin-bottom: 2rem; /* Add space below the heading */
@@ -57,11 +24,7 @@
     }
 
     body {
-<<<<<<< HEAD
-        background-color: 	#ffe5cc;
-=======
-        background-color: wheat;
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
+        background-color: #967259;
     }
 
     .container {
@@ -137,4 +100,37 @@
         margin-top: 1rem;
     }
 </style>
+
+<body>
+
+
+
+    <div class="container">
+
+        <div class="center-error">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, msg in messages %}
+              <div class="flash {{ category }}">
+                <p style="font-size:50px;">
+                    {{ msg }}
+                </p>
+            </div>
+            {% endfor %}
+            {% endwith %}
+        </div>
+       
+        <form method="POST" enctype="multipart/form-data">
+            
+            <h1 class="heading">Restaurant Login</h1>
+      
+            <input id="username" class="input" name="username" id="username" type="text" placeholder="Username" />
+            <input id="password" class="input" name="password" id="password" type="password" placeholder="Password" />
+            <button type="submit" class="button">Submit</button>
+            <p id="error-message" class="error-message"></p> <!-- Add this line -->
+        </form>
+        
+    </div>
+
+</body>
+
 </html>

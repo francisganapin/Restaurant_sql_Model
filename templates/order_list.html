@@ -129,7 +129,6 @@
 </head>
 
 <body>
-<<<<<<< HEAD
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container-fluid">
       <!-- Left branding -->
@@ -158,8 +157,9 @@
 
         <!-- Right-side Nav Links -->
         <ul class="navbar-nav align-items-center">
-          {% if role in ['EMPLOYEE', 'ADMIN'] %}
+          {% if role in ['ADMIN', 'EMPLOYEE'] %}
           <li class="nav-item"><a class="nav-link text-white" href="/menu/list">Menu List</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="/order/list" style="font-size:25px;" >Order List</a></li>
           <li class="nav-item"><a class="nav-link text-white" href="/stock/list">Stock List</a></li>
           <li class="nav-item"><a class="nav-link text-white" href="/analytic/list">Analytic List</a></li>
           {% endif %}
@@ -179,42 +179,10 @@
         </div>
       {% endfor %}
     {% endif %}
-=======
-<nav class="navbar navbar-expand-lg fixed-top">
-  <div class="container-fluid">
-    
-    <a class="navbar-brand fw-bold" href="#">Rubia Restaurant</a>
-    <a class="navbar-brand fw-bold" href="#">Welcome, {{ username }}!</a>
-    <a class="navbar-brand fw-bold" href="#">Role: {{ role }}</a>
-
-    <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon bg-light"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link active" href="#">Order List</a></li>
-        <li class="nav-item"><a class="nav-link" href="/stock/list">Stock List</a></li>
-        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-<div class="center-error">
-  {% with messages = get_flashed_messages(with_categories=true) %}
-  {% for category, msg in messages %}
-    <div class="flash {{ category }}">
-      <p style="font-size:50px;">
-          {{ msg }}
-      </p>
-  </div>
-  {% endfor %}
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
   {% endwith %}
 </div>
 
 
-<<<<<<< HEAD
 
 <div class="container py-5">
   <h2 class="section-title">Order List</h2>
@@ -367,36 +335,11 @@
 </div>
         
 <div class="card product-card" id="cardContainer5"><!--- hide this if item is value or total == 0 -->
-=======
-<div class="container py-5">
-  <h2 class="section-title">Menu List</h2>
-
-  <form class="form-section" action="/menu/list" method="POST">
-    <div class="search-button">
-      <input type="text" class="form-control" name="query_name" placeholder="Search by name">
-      <select id="category" name="query_category" class="form-select">
-        <option value="">Select Category</option>
-        <option value="Pasta">Pasta</option>
-        <option value="Seafood">Seafood</option>
-        <option value="Dessert">Dessert</option>
-        <option value="Salad">Salad</option>
-        <option value="Beverages">Beverages</option>
-        <option value="Main_Course">Main Course</option>
-      </select>
-      <button type="submit" class="btn btn-success">Search</button>
-    </div>
-  </form>
-
-  
-  <div class="flex-container">
-    {% for i in range(1,count) %}
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
     <div class="card product-card shadow-sm border-0 rounded-4 p-3" style="width: 300px;">
 
 
       <div class="card-body" id="cardBody{{ i }}">
 
-<<<<<<< HEAD
         <h5 class="card-title text-primary mb-3">Table {{ 5 }}</h5>
   
         {% for item in order_list %}
@@ -404,15 +347,6 @@
           <div class="d-flex justify-content-between mb-2">
             <span id="item_value{{ 5 }}" class="fw-semibold">{{ item.menu }} x {{ item.quantity }}</span>
             <span id="item_value{{ 5 }}" class="fw-bold text-decoration">{{ item.total }}</span>
-=======
-        <h5 class="card-title text-primary mb-3">Table {{ i }}</h5>
-  
-        {% for item in order_list %}
-          {% if item.table == 'table' ~ i %}
-          <div class="d-flex justify-content-between mb-2">
-            <span id="item_value{{ i }}" class="fw-semibold">{{ item.menu.name }} x {{ item.quantity }}</span>
-            <span id="item_value{{ i }}" class="fw-bold text-decoration">{{ item.total }}</span>
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
           </div>
           {% endif %}
         {% endfor %}
@@ -421,35 +355,22 @@
   
         <div class="d-flex justify-content-between">
           <span class="fw-bold text-dark">Total:</span>
-<<<<<<< HEAD
           <span class="fw-bold text-success" id="TotalValueId{{5}}"></span>
-=======
-          <span class="fw-bold text-success" id="TotalValueId{{i}}"></span>
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
         </div>
   
 
         </div>
         <div class="mt-4 text-end">
             <!-- Button trigger modal -->
-<<<<<<< HEAD
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{5}}">
-=======
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{i}}">
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
                 Proceed to Checkout
             </button>
       </div>
     </div>
-<<<<<<< HEAD
   </div>
     
 <!-- Modal -->
 {%for i in range(1,6) %}
-=======
-    
-<!-- Modal -->
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 <div class="modal fade" id="staticBackdrop{{i}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content shadow-lg rounded-3">
@@ -459,33 +380,22 @@
             </div>
             <div class="modal-body">
                 <div class="checkout-container">
-<<<<<<< HEAD
                     <h2 class="text-center mb-4">Enter Payment table {{i}}</h2>
 
                     <form action="/order/list/payment" method="post" enctype="multipart/form-data" class="checkout-form">
-=======
-                    <h2 class="text-center mb-4">Enter Payment</h2>
-
-                    <form action="" method="post" enctype="multipart/form-data" class="checkout-form">
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
            
              
                         <div class="mb-3">
                             <label class="form-label fw-bold text-primary">Order Summary</label>
                         
                             {% for item in order_list %}
-<<<<<<< HEAD
                                 {% if item.table == 'TABLE'~i %}
-=======
-                                {% if item.table == 'table'~i %}
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
                                 <input type="text" 
                                        class="form-control border border-success shadow-sm mb-1" 
                                        value="{{ item.menu.name }} x {{ item.quantity }}" 
                                        readonly>
                                 {% endif %}
                             {% endfor %}
-<<<<<<< HEAD
 
                         </div>
                         
@@ -503,10 +413,6 @@
                       </div>
 
           
-=======
-                        </div>
-
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 
                         <h5 class="mt-4">Payment Methods</h5>
                         <div class="mb-3">
@@ -521,20 +427,12 @@
 
                         <div class="mb-3">
                             
-<<<<<<< HEAD
                           <input type="file" name="input_image_url" id="imageInput" class="form-control mt-3 d-none" submit="image/*">
                           <input type="checkbox" id="checkboxInput" class="form-check-input mt-3 d-none" hidden="true">
       
             
                       </div>
 
-=======
-                            <input type="file" name="picture" id="imageInput" class="form-control mt-3 d-none" submit="image/*">
-                            <input type="checkbox" id="checkboxInput" class="form-check-input mt-3 d-none" hidden="true">
-        
-                            
-                        </div>
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 
                         <div class="mb-3">
                             <label class="form-label fw-bold text-primary">Payment Total</label>
@@ -542,11 +440,8 @@
 
                         </div>
                         
-<<<<<<< HEAD
                         <!-- we use this for delete table in back end-->
                         <input type="text" name="input_table" value="TABLE{{i}}" hidden>
-=======
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 
                      
 
@@ -559,13 +454,8 @@
         </div>
     </div>
 </div>
-<<<<<<< HEAD
 {%endfor%}
   
-=======
-
-    {% endfor %}
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
   </div>
 
   
@@ -590,7 +480,6 @@
         console.log(`Total price for Table:${i}`, totalValue);
         document.getElementById(`TotalValueId${i}`).innerHTML = `${totalValue}`; //
         document.querySelector(`input[value='total_payment${i}']`).value = `${totalValue}`
-<<<<<<< HEAD
 
 
         const card = document.getElementById(`cardContainer${i}`); // we hide the contaier if total value is 0 
@@ -601,18 +490,11 @@
             card.style.display = "block";
         }
     }
-=======
-        
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
     
     }
     
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
 </script>
 
 
@@ -631,11 +513,7 @@
         if (selectedValue === "ONLINE") {
             textInput.classList.remove("d-none");
             textInput.setAttribute("required", "required")
-<<<<<<< HEAD
         } else if (selectedValue === "CASH") {
-=======
-        } else if (selectedValue === "COD") {
->>>>>>> d60a0ea3c3fb8b17f990453c660e083d67c99676
             textInput.removeAttribute("required")
             checkboxInput.classList.remove("d-none");
         }
