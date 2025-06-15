@@ -16,7 +16,8 @@ from function.model import (User,
                             Menu_List, 
                             Order_List,
                             Income_table,
-                            Income_Holder, 
+                            Income_Holder,
+                            Income_Today, 
                             engine)
 
 from sqlalchemy.orm import selectinload
@@ -224,8 +225,6 @@ def menu_list_update(id):
 def menu_list_order(id):
 
   
-
-
     # avoid who are not login user to update
     if 'user_id' not in flask_session:
         return redirect(url_for('login'))
@@ -551,6 +550,11 @@ def order_list_payment():
                     order = new_item
             )
 
+            #this will save our add income by day
+            income_now = Income_Today(
+                balance = input_input_income
+            )
+
             with DbaseSession(engine) as session:
 
                 stmt = select(Order_List).where(Order_List.table == input_table)
@@ -560,6 +564,9 @@ def order_list_payment():
                 
       
                 session.add(new_item)
+
+                session.add(income_now)
+
                 session.add(new_income_holder)
                 
                 # Delete all matching orders
@@ -605,8 +612,10 @@ def analytic_list():
 
     with DbaseSession(engine) as session:
         if role  in ['EMPLOYEE','ADMIN']:
+
             stmt = select(Income_table)
-       
+            data = session.exec(stmt).all()
+            
             #this will count all pending order talbe
             stmt2 = select(Order_List).options(selectinload(Order_List.menu))
             orders = session.exec(stmt2).all()
@@ -625,6 +634,11 @@ def analytic_list():
             stmt5 = session.exec(select(Income_Holder)).all()
             life_time_order = len(stmt5)
 
+            #this wil lget all data that are equal today our income
+            stmt6 = select(Income_Today).where(Income_Today.transaction_date == date.today())
+            data2 = session.exec(stmt6).all()
+
+
         if request.method == 'POST':
             query_date = request.form.get('query_date')
 
@@ -633,7 +647,13 @@ def analytic_list():
 
     
 
-        data = session.exec(stmt).all()
+
+
+
+    income_today_holder = []
+
+    for item2 in data2:
+        income_today_holder.append(item2.balance)
 
     income_holder = []
 
@@ -650,6 +670,7 @@ def analytic_list():
 
     
     context = {
+        'income_today':sum(income_today_holder),
         'total_income': sum(income_holder),
         'income_table': paginated_data,
         'username': username,
@@ -696,6 +717,8 @@ def view_payment_analytic(_id):
     }
 
     return render_template('analytic_payment_picture.html',**context)
+
+
 if __name__ == '__main__':
     webbrowser.open('http://127.0.0.1:5000/menu/list')
     app.run(debug=True)

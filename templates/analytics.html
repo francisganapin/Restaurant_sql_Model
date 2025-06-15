@@ -142,8 +142,10 @@ h2.section-title {
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container-fluid">
       <!-- Left branding -->
-      <a class="navbar-brand fw-bold" href="#">Rubia Restaurant</a>
-  
+
+   
+      <a class="navbar-brand fw-bold">Rubia Restaurant</a>
+
       <!-- Welcome & Role -->
       <div class="d-flex flex-column text-white me-3">
         <span class="fw-bold">Welcome, {{ username }}!</span>
@@ -195,12 +197,21 @@ h2.section-title {
 
 
   <div class="container py-5">
-    <h2 class="section-title">Analytic Dashboard</h2>
-  
+
+    <div style="color:white">
+      <h2 class="section-title">Analytic Dashboard</h2>
+    </div>
+    
     <div class="dashboard">
 
       <div class="box">
-        <div class="title">Total Income ›</div>
+        <div class="title">Income Today</div>
+        <div class="count">₱{{ income_today }}</div>
+        <div class="status"></div>
+      </div>
+
+      <div class="box">
+        <div class="title">Total Income</div>
         <div class="count">₱{{ total_income }}</div>
         <div class="status"></div>
       </div>
