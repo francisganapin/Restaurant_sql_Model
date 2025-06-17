@@ -29,8 +29,8 @@ pip install psycopg2-binary
 
 
 #this one is our menu list we could edit price and stock for admin it was already relational 
-![Menu List](info/menu_list.png)
+![Menu List](https://github.com/francisganapin/Restaurant_sql_Model/blob/main/Info/menu_list.png)
 
 
 #this one is our menu list we could we just have 5 table that handle our order 
-![order List](info/order_list.png)
+![order List](http://github.com/francisganapin/Restaurant_sql_Model/blob/main/Info/order_list.png)
