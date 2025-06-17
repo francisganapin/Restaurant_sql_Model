@@ -33,4 +33,4 @@ pip install psycopg2-binary
 
 
 #this one is our menu list we could we just have 5 table that handle our order 
-![order List](http://github.com/francisganapin/Restaurant_sql_Model/blob/main/Info/order_list.png)
+![order List](https://github.com/francisganapin/Restaurant_sql_Model/blob/main/Info/order_list.png)
