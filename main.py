@@ -716,6 +716,7 @@ def view_payment_analytic(_id):
         'username':username
     }
 
+    
     return render_template('analytic_payment_picture.html',**context)
 
 

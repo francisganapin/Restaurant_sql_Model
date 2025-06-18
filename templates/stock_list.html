@@ -321,7 +321,16 @@
             <td>{{ item.name }}</td>
             <td>{{ item.category }}</td>
             <td>{{ item.price }}</td>
+            
+
+            {% if item.quantity == 0 %}
+         
+            <td style="color:red">Out of Stock</td>
+        
+            {% else %}
             <td>{{ item.quantity }}</td>
+            {% endif %}
+
             <td>{{ item.unit }}</td>
             {% if role == 'ADMIN' or role == 'EMPLOYEE' %}
             <td>{{ item.batch_code }}</td>

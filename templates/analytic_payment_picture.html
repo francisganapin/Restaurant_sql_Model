@@ -207,9 +207,12 @@
     
     {% for item in image_picture %}
 
-    <img src="{{ url_for('static', filename=item.image_url) }}"  target="_blank" style="min-width:600px;min-height:600px;">
-
-
+    <div class="text-center my-4">
+      <img src="{{ url_for('static', filename=item.image_url) }}"
+           class="img-fluid"
+           style="max-width: 400px; height: auto; border-radius: 12px;">
+    </div>
+    
     {% endfor %}  
 
 
