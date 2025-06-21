@@ -370,8 +370,11 @@
   </div>
     
 <!-- Modal -->
+
+
 {%for i in range(1,6) %}
-<div class="modal fade" id="staticBackdrop{{i}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+
+<div class="modal fade" id="staticBackdrop{{i}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" style="margin-top:70px;">
     <div class="modal-dialog">
         <div class="modal-content shadow-lg rounded-3">
             <div class="modal-header bg-primary text-white">
@@ -405,9 +408,11 @@
                           value='
                           {% for item in order_list %}
                           {% if item.table == 'TABLE'~ i %}
-                          {{ item.menu.name }} x {{ item.quantity }}
+
+                         "name":{{ item.menu.name }}","quantity":{{ item.quantity }},"price":"{{item.menu.price}}"
+
                           {% endif %}
-                          {% endfor %}' rows="3" required>
+                          {% endfor %}' rows="1" required>
                          
                      
                       </div>
@@ -454,9 +459,11 @@
         </div>
     </div>
 </div>
+
 {%endfor%}
-  
-  </div>
+
+
+</div>
 
   
 <script>

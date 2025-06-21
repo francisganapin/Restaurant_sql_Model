@@ -243,16 +243,19 @@ h2.section-title {
       <table class="styled-table mt-4">
         <thead>
           <tr>
-            <th>ID</th>
+            <TH>ID</TH>
+            <th>Transaction ID</th>
             <th>Order Date</th>
             <th>Income</th>
             <th>Payment Type</th>
-            <th>Image</th>
+            <th>Payment View</th>
+            <th>Reciept</th>
           </tr>
         </thead>
         <tbody>
           {% for item in income_table %}
           <tr>
+            <td>{{loop.index}}</td>
             <td>{{ item.id }}</td>
             <td>{{ item.order_date }}</td>
             <td>₱{{ item.income }}</td>
@@ -263,7 +266,7 @@ h2.section-title {
             {%else%}
             <td>None</td>
             {%endif%}
-            
+            <td><a href="{{ url_for('reciept_view_analytic',_id=item.id) }}">View</a></td>
           </tr>
           {% endfor %}
         </tbody>

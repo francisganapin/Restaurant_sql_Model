@@ -1,7 +1,7 @@
 import os
 import webbrowser
 from datetime import date
-
+from sqlalchemy import desc
 from flask import (
     Flask, render_template, request,
     session as flask_session,
@@ -187,7 +187,6 @@ def menu_list_archive(id):
 def menu_list_update(id):
 
 
-
     # avoid who are not login user to update
     if 'user_id' not in flask_session:
         return redirect(url_for('login'))
@@ -274,7 +273,7 @@ def menu_list_order(id):
                 flash(f'Item {item_name} was Order successfully', 'success')
             except Exception as e:
                 session.rollback()
-                flash(f'Item updated error.{today}', 'error')
+                flash(f'Item Order error.  {item_name } ', 'error')
 
     return redirect(url_for('menu_list'))
 
@@ -345,8 +344,6 @@ def stock_list():
 
 @app.route("/stock/list/update/<int:id>",methods=['GET','POST'])
 def stock_list_update(id):
-
-
 
     # avoid who are not login user to update
     if 'user_id' not in flask_session:
@@ -540,7 +537,7 @@ def order_list_payment():
 
         try:
             new_item = Income_table(
-                        order_list_item = input_item_order,
+                        order_list_item = input_item_order ,
                         payment_type    = input_payment_type,
                         image_url       = file_path,
                         income          = input_input_income
@@ -613,7 +610,7 @@ def analytic_list():
     with DbaseSession(engine) as session:
         if role  in ['EMPLOYEE','ADMIN']:
 
-            stmt = select(Income_table)
+            stmt = select(Income_table).order_by(desc(Income_table.id))
             data = session.exec(stmt).all()
             
             #this will count all pending order talbe
@@ -646,10 +643,6 @@ def analytic_list():
                 stmt = stmt.where(Income_table.order_date.ilike(f"%{query_date}%"))
 
     
-
-
-
-
     income_today_holder = []
 
     for item2 in data2:
@@ -690,7 +683,6 @@ def analytic_list():
 @app.route('/analytic/list/payment/<int:_id>',methods=['GET','POST'])
 def view_payment_analytic(_id):
 
-    
     if 'user_id' not in flask_session:
         return redirect(url_for('login'))
     
@@ -719,6 +711,71 @@ def view_payment_analytic(_id):
     
     return render_template('analytic_payment_picture.html',**context)
 
+import re 
+
+@app.route('/analytic/list/reciept/<int:_id>',methods=['GET','POST'])
+def reciept_view_analytic(_id):
+
+    if 'user_id' not in flask_session:
+        return redirect(url_for('login'))
+    
+    #prevent some usier to access this
+    role = flask_session.get('role')
+    if role not in ['ADMIN', 'EMPLOYEE']:
+        flash('You cannot Edit this','error')
+        return redirect(url_for('restrict_access'))
+    
+    #get session user
+    username = flask_session.get('username')
+    role =   flask_session.get('role')
+
+    print(role)
+
+    with DbaseSession(engine) as session:
+        stmt = select(Income_table).where(Income_table.id == _id)
+        results = session.exec(stmt).all()
+
+    result_list_item  = []
+
+    for item in results:
+        txt = item.order_list_item
+        result_list_item.append(txt)
+ 
+    print(result_list_item)
+
+   
+    # Step 1: Join into a single string (since it's a list with 1 item)
+    raw = " ".join(result_list_item)
+
+    # Step 2: Fix broken quotes (add a quote before names)
+    fixed = re.sub(r'"name":([a-zA-Z ]+)"', r'"name":"\1"', raw)
+
+    # Step 3: Add curly braces around each item
+    # We'll find all "name":"...", "quantity":..., "price":"..." groups
+    pattern = r'"name":"([^"]+)","quantity":(\d+),"price":"([^"]+)"'
+    matches = re.findall(pattern, fixed)
+
+    # Step 4: Convert to list of dictionaries
+    result_order = []
+    for name, quantity, price in matches:
+        result_order.append({
+            "name": name,
+            "quantity": int(quantity),
+            "price": price
+        })
+
+
+
+    print(result_order)
+    
+    context = {
+        'order_result_count':len(result_order),
+        'results':results,
+        'result_order':result_order,
+        'role':role,
+        'username':username
+    }
+    return render_template('analytic_reciept_order.html',**context)
 
 if __name__ == '__main__':
     webbrowser.open('http://127.0.0.1:5000/menu/list')

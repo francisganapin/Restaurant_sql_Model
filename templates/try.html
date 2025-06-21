@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Print Div Content with Table</title>
+</head>
+<body>
+    <div id="GFG" style="background-color: green; padding: 20px;">
+        <h2>GeeksforGeeks</h2>
+        <table>
+            <tr>
+                <th>Item</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>Computer</td>
+                <td>Algorithm</td>
+            </tr>
+            <tr>
+                <td>Microwave</td>
+                <td>Infrared</td>
+            </tr>
+        </table>
+    </div>
+    <p>The table inside the div will be printed on button click.</p>
+    <input type="button" value="Print Div" onclick="printDiv()">
+    <script>
+        function printDiv() {
+            let divContents = document.getElementById("GFG").innerHTML;
+            let printWindow = window.open('', '', 'height=500, width=500');
+            printWindow.document.open();
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Print Div Content</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; }
+                        table { width: 100%; border-collapse: collapse; }
+                        th, td { border: 1px solid #ddd; padding: 8px; }
+                        th { background-color: #f4f4f4; }
+                    </style>
+                </head>
+                <body>
+                    <h1>Div Contents:</h1>
+                    ${divContents}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+    </script>
+</body>
+</html>

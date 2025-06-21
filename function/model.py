@@ -185,6 +185,8 @@ class Income_table(SQLModel, table=True):
 
     holder: Optional["Income_Holder"] = Relationship(back_populates="order")
 
+    def __getitem__(self,key):
+        return getattr(self,key)
     
     # -------------------------------------------
     # # Pseudocode: (Permission & Access Control)
